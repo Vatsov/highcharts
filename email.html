@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Metric Alerting</title>
+    <title>Line chart</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript">
       var isPositive = true;
       var days = 90;
-      var accessToken = "POST_CLIENT_ITEM_ACCESS_TOKEN";
+      var accessToken = 'POST_CLIENT_ITEM_ACCESS_TOKEN';
       var person = {
         'id': 123,
         'username': 'Test',
         'email': 'test@test.com'
       };
       var client = {'status': 'status'};
-      var environment = "env";
+      var environment = 'env';
       var predictedRange = [
         [14.3, 27.7],
         [14.3, 27.7],
@@ -96,11 +96,11 @@
 
     <script type="text/javascript">
       var _rollbarConfig = {
-          accessToken,
+          accessToken: accessToken,
           payload: {
-              environment,
-              client,
-              person
+              environment: environment,
+              client: client,
+              person: person
           }
       };
       // Rollbar Snippet
@@ -586,20 +586,21 @@
     <div id="container" style="width: 380px; height: 85px;"></div>
 
     <script type="text/javascript">
-      const predictedLength = predictedRange.length - 1;
+      var latestPredictedIndex = predictedRange.length - 1;
+      var element = {};
 
-      predictedRange = predictedRange.map((range, index) => {
+      predictedRange = predictedRange.map(function (range, index) {
         range.unshift(index);
+
         return range;
       });
+      forecastRange = forecastRange.map(function (range, index) {
+        range.unshift(latestPredictedIndex + index);
 
-      forecastRange = forecastRange.map((range, index) => {
-        range.unshift(predictedLength + index);
         return range;
       });
-
-      trend = trend.map((curr, index) => {
-        let element = {
+      trend = trend.map(function (curr, index) {
+        element = {
           id: index,
           y: curr,
           marker: {
@@ -609,10 +610,9 @@
 
         return element;
       });
-
-      forecastAverage = forecastAverage.map((curr, index)=> {
-        let element = {
-          id: predictedLength + index,
+      forecastAverage = forecastAverage.map(function (curr, index) {
+        element = {
+          id: latestPredictedIndex + index,
           y: curr,
           marker: {
             enabled: false
@@ -634,7 +634,7 @@
           margin: [15, 0, 0, 0]
         },
         title: {
-          text: `Last ${days} days`,
+          text: 'Last ' + days + ' days',
           align: 'left',
           x: -3,
           y: 0,
@@ -663,7 +663,7 @@
           plotLines: [{
             color: '#CAC8C8',
             dashStyle: 'solid ',
-            value: predictedLength,
+            value: latestPredictedIndex,
             width: 1,
             zIndex: 2
           }]
@@ -675,7 +675,8 @@
           },
           title: {
             text: null
-          }
+          },
+          endOnTick: false
         },
         exporting: {
           buttons: {
@@ -699,7 +700,7 @@
           },
           arearange: {
             zIndex: 0,
-            marker : {
+            marker: {
               enabled: false
             }
           }
@@ -717,7 +718,7 @@
             name: 'Forecasted Average',
             data: forecastAverage,
             color: '#96D5E8',
-            pointStart: predictedLength
+            pointStart: latestPredictedIndex
           },
           {
             name: 'Predicted Range',
@@ -733,7 +734,6 @@
           }
         ]
       });
-
     </script>
   </body>
 </html>
